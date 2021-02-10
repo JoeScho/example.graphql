@@ -6,17 +6,21 @@ const schema = buildSchema(`
   type Query {
     hello: String,
     data: String,
-    time: String
+    time: String,
+    randomNumber(max: Int!): Int
   }
 `);
 
 const root = {
   hello: () => 'Hello world!',
   data: () => 'This is some data',
-  time: () => new Date()
+  time: () => new Date(),
+  randomNumber: ({ max }) => Math.floor(Math.random() * max)
 };
 
 const app = express();
+
+app.use((req, res, next) => next(console.log(req.ip)));
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
